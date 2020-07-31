@@ -14,8 +14,8 @@ on:
     types: [started]
     
 env:
-  SYSTEM_LINK:
-  PRODUCT_LINK:
+  SYSTEM_LINK: https://tdrive.manofuranium.workers.dev/miuia11/system.img
+  PRODUCT_LINK: https://tdrive.manofuranium.workers.dev/miuia11/product.img
 jobs:
   build:
     runs-on: ubuntu-latest
