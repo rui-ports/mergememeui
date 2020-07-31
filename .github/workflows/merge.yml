@@ -14,9 +14,8 @@ on:
     types: [started]
     
 env:
-  ROM_URL: http://download.h2os.com/OnePlus7T/OBT/OnePlus7THydrogen_13.X.07_OTA_007_all_2007030048_cdd72fc67d4b4884.zip
-  ROM_NAME: OxygenOS
-  ZIP_NAME: HydrogenOS
+  SYSTEM_LINK:
+  PRODUCT_LINK:
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -38,8 +37,8 @@ jobs:
             
        - name: Downloading system, product, and opproduct
          run: | 
-              aria2c http://tdrive.manofuranium.workers.dev/OP7TPro/system.img
-              aria2c http://tdrive.manofuranium.workers.dev/OP7TPro/product.img
+              aria2c $SYSTEM_LINK
+              aria2c $PRODUCT_LINK
               
        - name: making
          run: |
