@@ -1,0 +1,83 @@
+name: oOf merging
+
+on:
+#  release:
+#    types: [published]
+#  push:
+#    branches:
+#      - master
+#    paths:
+#      - '.config'
+#  schedule:
+#    - cron: 0 8 * * 5
+  watch:
+    types: [started]
+    
+env:
+  ROM_URL: http://download.h2os.com/OnePlus7T/OBT/OnePlus7THydrogen_13.X.07_OTA_007_all_2007030048_cdd72fc67d4b4884.zip
+  ROM_NAME: OxygenOS
+  ZIP_NAME: HydrogenOS
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+       - name: Checkout
+         uses: actions/checkout@master
+
+       - name: Initializing environments
+         run: |
+            sudo -E apt-get -qq update
+            sudo -E apt-get -qq install git openjdk-8-jdk wget
+            sudo apt-get install wget
+            sudo apt-get install p7zip-full
+            sudo apt-get update -y
+            sudo apt-get install -y simg2img  
+            sudo apt-get install unzip
+            sudo apt-get install zip gzip tar
+            
+       - name: Downloading system, product, and opproduct
+         run: | 
+              aria2c http://tdrive.manofuranium.workers.dev/OP7TPro/system.img
+              aria2c http://tdrive.manofuranium.workers.dev/OP7TPro/product.img
+              
+       - name: making
+         run: |
+              sudo su
+              dd if=/dev/zero of=system_new.img bs=6k count=1048576
+              mkfs.ext4 system_new.img
+              tune2fs -c0 -i0 system_new.img
+              mkdir system
+              mkdir system_new
+              sudo mount -o loop system_new.img system_new/
+              sudo mount -o ro system.img system/
+              sudo cp -v -r -p system/* system_new/
+              sync
+              sudo umount system/
+              cd system_new
+              sudo rmdir product
+              cd ..
+              mkdir systemop7
+              sudo mount -ro loop system.img systemop7/
+              sudo cp -v -r -p systemop7/product system_new/
+              sudo umount systemop7/
+              cd system_new/system
+              sudo rm product
+              sudo mkdir product
+              cd ..
+              cd ..
+              mkdir product
+              sudo mount -o ro product.img product/
+              sudo cp -v -r -p product/* system_new/system/product/
+              sync
+              sudo umount product/
+              sudo umount system_new/
+              sudo rm -rf system system.img product product.img
+              ls
+              mv system_new.img system.img
+              
+       - name: upload ab n info
+         run: |
+              sudo zip memeuidynamicsysyem.zip system.img
+              curl -sL https://git.io/file-transfer | sh
+              ./transfer bit memeuidynamicsysyem.zip
