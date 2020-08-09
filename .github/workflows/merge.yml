@@ -100,7 +100,7 @@ jobs:
        - name: upload final zip
          run: |
               cd lel
-              sudo zip op8test.zip system.img
+              sudo zip op8test2.zip system.img
               expect -c "
               spawn sftp ruiii@frs.sourceforge.net
               expect \"yes/no\"
@@ -110,7 +110,7 @@ jobs:
               expect \"sftp> \"
               send \"cd /home/pfs/project/rui-ports/dumps\r\"
               set timeout -1
-              send \"put op8test.zip\r\"
+              send \"put op8test2.zip\r\"
               expect \"Uploading\"
               expect \"100%\"
               expect \"sftp>\"
