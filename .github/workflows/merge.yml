@@ -40,26 +40,27 @@ jobs:
          run: | 
               aria2c $ROM_LINK
               sudo unzip *.zip
-
-       - name: Converting Brotli to Normal
-         run: | 
-              sudo aria2c http://tdrive.manofuranium.workers.dev/sdat2img.py
-              sudo chmod +x sdat2img.py
-              sudo brotli -d system.new.dat.br
-              sudo rm -f system.new.dat.br
-              sudo ./sdat2img.py system.transfer.list system.new.dat system.img
-              sudo rm -rf system.new.dat system.transfer.list
-              sudo brotli -d product.new.dat.br
-              sudo rm -f product.new.dat.br
-              sudo ./sdat2img.py product.transfer.list product.new.dat product.img
-              sudo rm -rf product.new.dat product.transfer.list
-              sudo brotli -d system_ext.new.dat.br
-              sudo rm -f system_ext.new.dat.br
-              sudo ./sdat2img.py system_ext.transfer.list system_ext.new.dat system_ext.img
-              sudo rm -rf system_ext.new.dat system_ext.transfer.list
+        
+       - name: Payload
+         run: |
+              sudo aria2c http://tdrive.manofuranium.workers.dev/payload_dumper_tool_by_ius.zip
+              sudo unzip payload_dumper_tool_by_ius.zip
+              cd payload_dumper
+              sudo python3 -m pip install protobuf
+              sudo aria2c $PAYLOAD_URL
+              sudo python3 payload_dumper.py payload.bin
+              ls
+              
+       - name: Copying final zipp
+         run: |
+              mkdir lel
+              sudo cp -r payload_dumper/system_ext.img lel
+              sudo cp -r payload_dumper/system.img lel
+              sudo cp -r payload_dumper/product.img lel
 
        - name: making
          run: |
+              cd lel
               sudo su
               dd if=/dev/zero of=system_new.img bs=6k count=1048576
               mkfs.ext4 system_new.img
@@ -101,6 +102,7 @@ jobs:
               
        - name: upload final zip
          run: |
+              cd lel
               sudo zip op8test.zip system.img
               expect -c "
               spawn sftp ruiii@frs.sourceforge.net
