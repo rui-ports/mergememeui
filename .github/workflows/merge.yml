@@ -14,7 +14,7 @@ on:
     types: [started]
     
 env:
-  ROM_LINK: https://tdr
+  ROM_LINK: https://oxygenos.oneplus.net/OnePlus8Oxygen_15.X.02_OTA_001_all_2006111749_wipe_d0f0a4b9dbde4cce.zip
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,6 +33,8 @@ jobs:
             sudo apt-get install -y simg2img  
             sudo apt-get install unzip
             sudo apt-get install zip gzip tar
+            sudo -E apt-get install expect
+            sudo apt update 2>/dev/null | grep packages
             
        - name: Downloading and Extracting FW
          run: | 
@@ -41,7 +43,7 @@ jobs:
 
        - name: Converting Brotli to Normal
          run: | 
-              sudo aria2c http://tdrive.manofuranium.workers.dev/sdat2img.py
+              sudo ariac
               sudo chmod +x sdat2img.py
               sudo brotli -d system.new.dat.br
               sudo rm -f system.new.dat.br
@@ -79,9 +81,11 @@ jobs:
               cd system_new/system
               sudo rm product
               sudo mkdir product
+              sudo mkdir system_ext
               cd ..
               cd ..
               mkdir product
+              mkdir system_ext
               sudo mount -o ro product.img product/
               sudo cp -v -r -p product/* system_new/system/product/
               sync
@@ -91,12 +95,25 @@ jobs:
               sync
               sudo umount system_ext/
               sudo umount system_new/
-              sudo rm -rf system system.img product product.img
+              sudo rm -rf system system.img product product.img system_ext system_ext.img
               ls
               mv system_new.img system.img
               
-       - name: upload ab n info
+       - name: upload final zip
          run: |
-              sudo zip nobyamerjed.zip system.img
-              curl -sL https://git.io/file-transfer | sh
-              ./transfer bit nobyamerjed.zip
+              sudo zip op8.zip system.img
+              expect -c "
+              spawn sftp ruiii@frs.sourceforge.net
+              expect \"yes/no\"
+              send \"yes\r\"
+              expect \"Password\"
+              send \"${{ secrets.PASSWORD }}\r\"
+              expect \"sftp> \"
+              send \"cd /home/pfs/project/rui-ports/dumps\r\"
+              set timeout -1
+              send \"put $ROM_NAME.zip\r\"
+              expect \"Uploading\"
+              expect \"100%\"
+              expect \"sftp>\"
+              send \"bye\r\"
+              interact"
