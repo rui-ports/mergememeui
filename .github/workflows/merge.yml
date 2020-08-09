@@ -36,18 +36,14 @@ jobs:
             sudo -E apt-get install expect
             sudo apt update 2>/dev/null | grep packages
             
-       - name: Downloading and Extracting FW
-         run: | 
-              aria2c $ROM_LINK
-              sudo unzip *.zip
-        
        - name: Payload
          run: |
               sudo aria2c http://tdrive.manofuranium.workers.dev/payload_dumper_tool_by_ius.zip
               sudo unzip payload_dumper_tool_by_ius.zip
               cd payload_dumper
               sudo python3 -m pip install protobuf
-              sudo aria2c $PAYLOAD_URL
+              sudo aria2c $ROM_LINK
+              sudo unzip *.zip
               sudo python3 payload_dumper.py payload.bin
               ls
               
