@@ -86,6 +86,10 @@ jobs:
               sudo cp -v -r -p product/* system_new/system/product/
               sync
               sudo umount product/
+              sudo mount -o ro system_ext.img system_ext/
+              sudo cp -v -r -p system_ext/* system_new/system/system_ext/
+              sync
+              sudo umount system_ext/
               sudo umount system_new/
               sudo rm -rf system system.img product product.img
               ls
