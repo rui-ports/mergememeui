@@ -43,7 +43,7 @@ jobs:
 
        - name: Converting Brotli to Normal
          run: | 
-              sudo ariac
+              sudo aria2c http://tdrive.manofuranium.workers.dev/sdat2img.py
               sudo chmod +x sdat2img.py
               sudo brotli -d system.new.dat.br
               sudo rm -f system.new.dat.br
@@ -101,7 +101,7 @@ jobs:
               
        - name: upload final zip
          run: |
-              sudo zip op8.zip system.img
+              sudo zip op8test.zip system.img
               expect -c "
               spawn sftp ruiii@frs.sourceforge.net
               expect \"yes/no\"
@@ -111,7 +111,7 @@ jobs:
               expect \"sftp> \"
               send \"cd /home/pfs/project/rui-ports/dumps\r\"
               set timeout -1
-              send \"put $ROM_NAME.zip\r\"
+              send \"put op8test.zip\r\"
               expect \"Uploading\"
               expect \"100%\"
               expect \"sftp>\"
