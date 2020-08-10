@@ -14,7 +14,7 @@ on:
     types: [started]
     
 env:
-  ROM_LINK: https://oxygenos.oneplus.net/OnePlus8Oxygen_15.X.02_OTA_001_all_2006111749_wipe_d0f0a4b9dbde4cce.zip
+  ROM_LINK: https://hugeota.d.miui.com/20.8.7/miui_CMI_20.8.7_7778f4438e_11.0.zip
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,30 +33,31 @@ jobs:
             sudo apt-get install -y simg2img  
             sudo apt-get install unzip
             sudo apt-get install zip gzip tar
-            sudo -E apt-get install expect
-            sudo apt update 2>/dev/null | grep packages
             
-       - name: Payload
-         run: |
-              sudo aria2c http://tdrive.manofuranium.workers.dev/payload_dumper_tool_by_ius.zip
-              sudo unzip payload_dumper_tool_by_ius.zip
-              cd payload_dumper
-              sudo python3 -m pip install protobuf
-              sudo aria2c $ROM_LINK
+       - name: Downloading and Extracting FW
+         run: | 
+              aria2c $ROM_LINK
               sudo unzip *.zip
-              sudo python3 payload_dumper.py payload.bin
-              ls
               
-       - name: Copying final zipp
-         run: |
-              mkdir lel
-              sudo cp -r payload_dumper/system_ext.img lel
-              sudo cp -r payload_dumper/system.img lel
-              sudo cp -r payload_dumper/product.img lel
-
+       - name: Converting Brotli to Normal
+         run: | 
+              sudo aria2c http://tdrive.manofuranium.workers.dev/sdat2img.py
+              sudo chmod +x sdat2img.py
+              sudo brotli -d system.new.dat.br
+              sudo rm -f system.new.dat.br
+              sudo ./sdat2img.py system.transfer.list system.new.dat system.img
+              sudo rm -rf system.new.dat system.transfer.list
+              sudo brotli -d product.new.dat.br
+              sudo rm -f product.new.dat.br
+              sudo ./sdat2img.py product.transfer.list product.new.dat product.img
+              sudo rm -rf product.new.dat product.transfer.list
+              sudo brotli -d system_ext.new.dat.br
+              sudo rm -f system_ext.new.dat.br
+              sudo ./sdat2img.py system_ext.transfer.list system_ext.new.dat system_ext.img
+              sudo rm -rf system_ext.new.dat system_ext.transfer.list
+              
        - name: making
          run: |
-              cd lel
               sudo su
               dd if=/dev/zero of=system_new.img bs=6k count=1048576
               mkfs.ext4 system_new.img
@@ -96,15 +97,10 @@ jobs:
               sudo rm -rf system system.img product product.img system_ext system_ext.img
               ls
               sudo mv system_new.img system.img
-         
-       - name: zipping
+              
+       - name: upload ab n info
          run: |
-              cd lel
-              sudo zip op8test3.zip system.img
-     
-       - name: upload final zip
-         run: |
-              cd lel
+              sudo zip meme11.zip system.img
               expect -c "
               spawn sftp ruiii@frs.sourceforge.net
               expect \"yes/no\"
@@ -114,7 +110,7 @@ jobs:
               expect \"sftp> \"
               send \"cd /home/pfs/project/rui-ports/dumps\r\"
               set timeout -1
-              send \"put op8test3.zip\r\"
+              send \"put meme11.zip\r\"
               expect \"Uploading\"
               expect \"100%\"
               expect \"sftp>\"
