@@ -115,7 +115,7 @@ jobs:
               expect \"sftp> \"
               send \"cd /home/pfs/project/rui-ports/dumps\r\"
               set timeout -1
-              send \"put op8test2.zip\r\"
+              send \"put op8test3.zip\r\"
               expect \"Uploading\"
               expect \"100%\"
               expect \"sftp>\"
