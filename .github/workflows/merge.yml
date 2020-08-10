@@ -98,7 +98,7 @@ jobs:
               sudo mv system_new.img system.img
          
        - name: zipping
-         run: 
+         run: |
               cd lel
               sudo zip op8test3.zip system.img
      
