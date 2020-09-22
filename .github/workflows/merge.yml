@@ -89,10 +89,12 @@ jobs:
               sudo mount -o ro product.img product/
               sudo cp -v -r -p product/* system_new/system/product/
               sync
+              ln -s system_new/product system_new/system/product
               sudo umount product/
               sudo mount -o ro system_ext.img system_ext/
               sudo cp -v -r -p system_ext/* system_new/system/system_ext/
               sync
+              ln -s system_new/system_ext system_new/system/product
               sudo umount system_ext/
               sudo umount system_new/
               sudo rm -rf system system.img product product.img system_ext system_ext.img
