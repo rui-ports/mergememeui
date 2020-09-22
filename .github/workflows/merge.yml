@@ -87,16 +87,16 @@ jobs:
               mkdir product
               mkdir system_ext
               sudo mount -o ro product.img product/
-              sudo cp -v -r -p product/* system_new/system/system/product/
+              sudo cp -v -r -p product/* system_new/system/product/
               sync
-              sudo rm -rf system_new/system/product
-              sudo ln -s system_new/system/system/product system_new/system/product
+              sudo rm -rf system_new/product
+              sudo ln -s system_new/system/product system_new/product
               sudo umount product/
               sudo mount -o ro system_ext.img system_ext/
-              sudo cp -v -r -p system_ext/* system_new/system/system/system_ext/
+              sudo cp -v -r -p system_ext/* system_new/system/system_ext/
               sync
-              sudo rm -rf system_new/system/system_ext
-              sudo ln -s system_new/system/system/system_ext system_new/system/system_ext
+              sudo rm -rf system_new/system_ext
+              sudo ln -s system_new/system/system_ext system_new/system/system_ext
               sudo umount system_ext/
               sudo umount system_new/
               sudo rm -rf system system.img product product.img system_ext system_ext.img
