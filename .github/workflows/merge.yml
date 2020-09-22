@@ -14,7 +14,7 @@ on:
     types: [started]
     
 env:
-  ROM_LINK: https://hugeota.d.miui.com/20.8.7/miui_CMI_20.8.7_7778f4438e_11.0.zip
+  ROM_LINK: https://cfhcable.dl.sourceforge.net/project/xiaomi-eu-multilang-miui-roms/xiaomi.eu/MIUI-WEEKLY-RELEASES/20.9.17/xiaomi.eu_multi_MI10_20.9.17_v12-11.zip
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -42,7 +42,7 @@ jobs:
               
        - name: Converting Brotli to Normal
          run: | 
-              sudo aria2c http://tdrive.manofuranium.workers.dev/sdat2img.py
+              sudo aria2c https://index.download-content.cf/sdat2img.py
               sudo chmod +x sdat2img.py
               sudo brotli -d system.new.dat.br
               sudo rm -f system.new.dat.br
@@ -101,7 +101,7 @@ jobs:
               
        - name: upload ab n info
          run: |
-              sudo zip meme11.zip system.img
+              sudo zip memeha.zip system.img
               expect -c "
               spawn sftp ruiii@frs.sourceforge.net
               expect \"yes/no\"
@@ -111,7 +111,7 @@ jobs:
               expect \"sftp> \"
               send \"cd /home/pfs/project/rui-ports/dumps\r\"
               set timeout -1
-              send \"put meme11.zip\r\"
+              send \"put memeha.zip\r\"
               expect \"Uploading\"
               expect \"100%\"
               expect \"sftp>\"
